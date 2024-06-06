@@ -26,14 +26,51 @@
         </select>
         <div id="characterInfo">
             <div class="character-details">
-                <h2></h2>
-                <img src="" alt="">
-                <p><strong>Estado:</strong></p>
-                <p><strong>Última ubicación vista:</strong> </p>
-                <p><strong>Primer episodio:</strong> </p>
+                <h2 id="name"></h2>
+                <img id="image" src="" alt="">
+                <p><strong>Estado: <span id="is-alive"></span></strong></p>
+                <p><strong>Última ubicación vista: <span id="last-seen"></span></strong> </p>
+                <p><strong>Primer episodio: <span id="first-seen"></span></strong> </p>
             </div>
         </div>
+        <script>
+            // 1. Selecciar el <select> del dom
+            const selectCharacter = document.querySelector('#characterSelector');
+        
+            //2. Anadir un listener para detectar cuando cambia el valor del select: el evento 'change'
+            selectCharacter.addEventListener('change', async function(event){
+                const selectedValue = event.target.value;
+                const url = "https://rickandmortyapi.com/api/character/" + selectedValue;
+                const response = await fetch(url);
+                const data = await response.json();
+                console.log("datos recibidos", data);
+        
+                document.querySelector('#name').textContent = data.name;
+                document.querySelector('#image').src = data.image;
+                document.querySelector('#is-alive').textContent = data.status;
+                document.querySelector('#last-seen').textContent = data.location.name;
+                
+                console.log(data.episode[0]);
 
+                const episodeUrl = data.episode[0];
+                const episodeResponse = await fetch(episodeUrl);
+                const episodeData = await episodeResponse.json();
+                console.log("datos del episodio", episodeData);
+                
+                document.querySelector('#first-seen').textContent = episodeData.episode
+                
+            });    
+        
+            //3. Dentro de la función que maneja el evento, tenemos que ejecutar la función fetch, y pasarla la URL
+        
+            //Esta URL tiene una parte estática y otra dinámica
+            //https://rickandmortyapi.com/api/character/2
+        
+            // Cuando obtengamos los datos del API, hay que rellenar el  el div .character-details con la información que nos viene de la API
+        
+        </script>
 </body>
+
+
 
 </html>
